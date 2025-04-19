@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload History - WhisperX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dark">
+  <div class="sidebar">
+    <div class="logo">WhisperX</div>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/history" class="active">Uploads</a>
+      <a href="/settings">Settings</a>
+      <a href="/admin">Admin</a>
+      <a href="/analytics">Analytics</a>
+      <a href="/log">Log</a>
+      {% if session.get('username') %}
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login">Login</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <div class="main">
+    <header class="topbar">
+      <span>Welcome, {{ session.get('username', 'Guest') }}</span>
+    </header>
+
+    <div class="card">
+      <h2>Upload History</h2>
+      {% if uploads %}
+        <ul class="history-list">
+          {% for item in uploads %}
+            <li>
+              <strong>{{ item.filename }}</strong><br />
+              <span>ID: {{ item.job_id }}</span><br />
+              <span>Status: <span class="status {{ item.status | lower }}">{{ item.status }}</span></span><br />
+              <small>{{ item.timestamp }}</small><br />
+              {% if item.user %}
+                <span>Uploaded by: {{ item.user }}</span><br />
+              {% endif %}
+              <a class="download-link" href="/transcripts/{{ item.job_id }}.txt" download>Download Transcript</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No uploads yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

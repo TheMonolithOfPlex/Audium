@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - WhisperX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dark">
+  <div class="sidebar">
+    <div class="logo">WhisperX</div>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/history">Uploads</a>
+      <a href="/settings">Settings</a>
+      <a href="/admin" class="active">Admin</a>
+      <a href="/analytics">Analytics</a>
+      <a href="/log">Log</a>
+      {% if session.get('username') %}
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login">Login</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <div class="main">
+    <header class="topbar">
+      <span>Welcome, {{ session.get('username', 'Guest') }}</span>
+    </header>
+
+    <div class="card">
+      <h2>User Accounts</h2>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.status }}</td>
+            <td>
+              <form action="/admin/toggle/{{ user.username }}" method="POST" style="display:inline;">
+                <button type="submit" class="admin-action-btn">Toggle Status</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+  </div>
+</body>
+</html>

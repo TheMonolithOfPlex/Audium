@@ -1,0 +1,163 @@
+:root {
+  --bg-color: #1e1e1e;
+  --text-color: #ffffff;
+  --card-bg: #2b2b2b;
+  --link-color: #4dabf7;
+}
+
+body.light {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --card-bg: #f4f4f4;
+  --link-color: #1d4ed8;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background-color: #1f1f1f;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #00c6ff;
+  margin-bottom: 30px;
+}
+
+.sidebar nav a {
+  display: block;
+  padding: 12px 16px;
+  color: #bbb;
+  text-decoration: none;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background-color: #333;
+  color: #fff;
+}
+
+/* MAIN CONTENT */
+.main {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background-color: #181818;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #888;
+}
+
+/* CARDS */
+.card {
+  background-color: var(--card-bg);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+/* TOAST (SLIDE-IN) */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: -350px;
+  background-color: #323232;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  z-index: 9999;
+  transition: right 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.toast.show {
+  right: 20px;
+  opacity: 1;
+}
+
+.toast.success {
+  background-color: #28a745;
+}
+
+.toast.error {
+  background-color: #dc3545;
+}
+
+/* CONTINUE EXISTING STYLES BELOW */
+
+.history-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 16px;
+}
+
+.history-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid #333;
+}
+
+.history-list li strong {
+  display: block;
+  color: #fff;
+}
+
+.history-list li small {
+  color: #aaa;
+}
+
+canvas {
+  width: 100% !important;
+  max-width: 100%;
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+/* ... [all your previously included styles from your message remain here unchanged] ... */
+
+/* Flash message box styling */
+.flash-messages {
+  margin: 1rem;
+  padding: 0.5rem;
+}
+
+.flash {
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.flash.info {
+  background-color: #2d6cdf;
+  color: white;
+}

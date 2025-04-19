@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Analytics - WhisperX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dark">
+  <div class="sidebar">
+    <div class="logo">WhisperX</div>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/history">Uploads</a>
+      <a href="/settings">Settings</a>
+      <a href="/admin">Admin</a>
+      <a href="/analytics" class="active">Analytics</a>
+      <a href="/log">Log</a>
+      {% if session.get('username') %}
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login">Login</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <div class="main">
+    <header class="topbar">
+      <span>Welcome, {{ session.get('username', 'Guest') }}</span>
+    </header>
+
+    <div class="card">
+      <h2>Usage Summary</h2>
+      <p>Coming soon: charts, graphs, and insights.</p>
+    </div>
+
+    <div class="card">
+      <h2>Transcription Metrics</h2>
+      <ul class="history-list">
+        <li>Total uploads: <strong>0</strong></li>
+        <li>Average file size: <strong>—</strong></li>
+        <li>Peak usage time: <strong>—</strong></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

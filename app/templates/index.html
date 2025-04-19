@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WhisperX Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dark">
+  <div class="sidebar">
+    <div class="logo">WhisperX</div>
+    <nav>
+      <a href="/" class="active">Dashboard</a>
+      <a href="/history">Uploads</a>
+      <a href="/settings">Settings</a>
+      <a href="/admin">Admin</a>
+      <a href="/analytics">Analytics</a>
+      <a href="/log">Log</a>
+      {% if session.get('username') %}
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login">Login</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <div class="main">
+    <header class="topbar">
+      <span>Welcome, {{ session.get('username', 'Guest') }}</span>
+    </header>
+
+    <div class="card upload-card">
+      <h2>Upload Audio File</h2>
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="audio/*" required />
+        <label for="language">Language:</label>
+        <select name="language" id="language">
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <!-- Add more -->
+        </select>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+
+    <div class="card info-card">
+      <p>Use the panel to upload new audio, view transcription status, or explore upload history.</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" style="display: none;">
+    <p id="toast-message"></p>
+  </div>
+
+  <script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>

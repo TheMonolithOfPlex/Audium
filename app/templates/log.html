@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>System Log - WhisperX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .log-container {
+      background-color: #1e293b;
+      padding: 1rem;
+      border-radius: 8px;
+      height: 500px;
+      overflow-y: auto;
+      font-family: monospace;
+      color: #e2e8f0;
+      box-shadow: 0 0 0 1px #334155;
+    }
+    .log-line {
+      white-space: pre-wrap;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+</head>
+<body class="dark">
+  <div class="sidebar">
+    <div class="logo">WhisperX</div>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/history">Uploads</a>
+      <a href="/settings">Settings</a>
+      <a href="/admin">Admin</a>
+      <a href="/analytics">Analytics</a>
+      <a href="/log" class="active">Log</a>
+      {% if session.get('username') %}
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login">Login</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <div class="main">
+    <header class="topbar">
+      <span>Welcome, {{ session.get('username', 'Guest') }}</span>
+    </header>
+
+    <div class="card">
+      <h2>Recent Activity</h2>
+      <div class="log-container">
+        {% if log_lines %}
+          {% for line in log_lines %}
+            <div class="log-line">{{ line }}</div>
+          {% endfor %}
+        {% else %}
+          <p>No logs available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>
