@@ -1,0 +1,27 @@
+# --- Web Framework ---
+flask
+flask-cors
+python-dotenv
+
+# --- File Handling & Background Tasks ---
+werkzeug
+requests
+tqdm
+aiofiles
+schedule
+
+# --- Email Validation ---
+email-validator
+
+# --- WhisperX and Audio Processing ---
+faster-whisper
+whisperx
+torchaudio
+torch
+librosa
+pydub
+pyannote-audio==3.1.1
+transformers
+
+# --- System & Utility ---
+psutil

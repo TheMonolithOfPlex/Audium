@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  whisperx:
+    container_name: whisperx
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9200:9200"
+    volumes:
+      - .:/app
+      - /app/__pycache__  # prevent Python cache files inside container
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
