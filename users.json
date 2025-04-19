@@ -1,4 +1,16 @@
 [
-  { "username": "jpratt", "active": true },
-  { "username": "ella", "active": false }
+  {
+    "username": "jpratt",
+    "password": "owens2128",
+    "email": "jpratt@example.com",
+    "role": "admin",
+    "active": true
+  },
+  {
+    "username": "ella",
+    "password": "test123",
+    "email": "ella@example.com",
+    "role": "user",
+    "active": false
+  }
 ]

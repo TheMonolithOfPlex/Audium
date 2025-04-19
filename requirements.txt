@@ -1,5 +1,6 @@
 # --- Web Framework ---
 flask
+flask-wtf
 flask-cors
 python-dotenv
 
@@ -9,6 +10,7 @@ requests
 tqdm
 aiofiles
 schedule
+filelock
 
 # --- Email Validation ---
 email-validator
