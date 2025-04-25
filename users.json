@@ -1,16 +1,16 @@
 [
   {
     "username": "jpratt",
-    "password": "owens2128",
+    "password": "hashed_password_placeholder",
     "email": "jpratt@example.com",
-    "role": "admin",
+    "roleId": 1,
     "active": true
   },
   {
     "username": "ella",
-    "password": "test123",
+    "password": "hashed_password_placeholder",
     "email": "ella@example.com",
-    "role": "user",
+    "roleId": 2,
     "active": false
   }
 ]

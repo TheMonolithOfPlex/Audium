@@ -29,30 +29,38 @@ def verify_password(stored_hash, stored_salt, provided_password):
 def migrate_users_to_hashed_passwords():
     """Migrate existing plaintext passwords to hashed passwords"""
     if not os.path.exists(USERS_FILE):
+        print(f"Error: {USERS_FILE} does not exist.")
         return False
     
     lock = filelock.FileLock(f"{USERS_FILE}.lock")
     with lock:
         try:
             with open(USERS_FILE, 'r') as f:
-                users = json.load(f)
-            
-            for user in users:
-                if 'password_hash' not in user:  # Not yet migrated
-                    password = user.pop('password', None)  # Remove plaintext password
-                    if password:
-                        password_hash, salt = hash_password(password)
-                        user['password_hash'] = password_hash
-                        user['salt'] = salt
-            
+                try:
+                    users = json.load(f)
+                except json.JSONDecodeError:
+                    users = []
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error reading {USERS_FILE}: {e}")
+            return False
+        
+        for user in users:
+            if 'password_hash' not in user:  # Not yet migrated
+                password = user.pop('password', None)  # Remove plaintext password
+                if password:
+                    password_hash, salt = hash_password(password)
+                    user['password_hash'] = password_hash
+            temp_file = f"{USERS_FILE}.tmp"
+            with open(temp_file, 'w') as f:
+                json.dump(users, f, indent=2)
+            os.replace(temp_file, USERS_FILE)
+        try:
             with open(USERS_FILE, 'w') as f:
                 json.dump(users, f, indent=2)
-            
-            return True
+                return True
         except Exception as e:
             print(f"Error migrating passwords: {e}")
             return False
-
 def create_user(username, email, password, role='user'):
     """Create a new user with a hashed password"""
     password_hash, salt = hash_password(password)
@@ -113,10 +121,13 @@ def get_users():
         try:
             with open(USERS_FILE, 'r') as f:
                 return json.load(f)
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error reading {USERS_FILE}: {e}")
             return []
+    else:
+        with open(USERS_FILE, 'w') as f:
+            json.dump([], f)
     return []
-
 def get_user_by_username(username):
     """Get a user record by username"""
     users = get_users()

@@ -5,7 +5,7 @@
   <title>Upload History - WhisperX</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="dark">
+<body data-theme="dark">
   <div class="sidebar">
     <div class="logo">WhisperX</div>
     <nav>
@@ -23,11 +23,10 @@
     </nav>
   </div>
 
-  <div class="main">
     <header class="topbar">
-      <span>Welcome, {{ session.get('username', 'Guest') }}</span>
+      <span>Welcome, {% if session.get('username', 'Guest') == 'Guest' %}Guest{% else %}{{ session.get('username') }}{% endif %}</span>
+      <button id="theme-toggle" class="theme-toggle">Toggle Theme</button>
     </header>
-
     <div class="card">
       <h2>Upload History</h2>
       {% if uploads %}
@@ -41,14 +40,32 @@
               {% if item.user %}
                 <span>Uploaded by: {{ item.user }}</span><br />
               {% endif %}
-              <a class="download-link" href="/transcripts/{{ item.job_id }}.txt" download>Download Transcript</a>
+              {% if item.file_exists %}
+                <a class="download-link" href="/transcripts/{{ item.job_id }}.txt" download>Download Transcript</a>
+              {% else %}
+                <span class="error">Transcript not available</span>
+              {% endif %}
             </li>
           {% endfor %}
         </ul>
       {% else %}
-        <p>No uploads yet.</p>
+        <p>No uploads have been made yet. Please upload a file to see it here.</p>
       {% endif %}
     </div>
-  </div>
+<script defer>
+  // This script toggles the theme between dark and light modes when the button is clicked.
+  const toggleButton = document.getElementById('theme-toggle');
+  const body = document.body;
+
+  toggleButton.addEventListener('click', () => {
+    if (body.classList.contains('dark')) {
+      body.classList.remove('dark');
+      body.classList.add('light');
+    } else {
+      body.classList.remove('light');
+      body.classList.add('dark');
+    }
+  });
+</script>
 </body>
 </html>

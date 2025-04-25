@@ -16,7 +16,7 @@
       <a href="/admin">Admin</a>
       <a href="/analytics">Analytics</a>
       <a href="/log">Log</a>
-      {% if session.get('username') %}
+      {% if session.get('username', None) %}
         <a href="/logout">Logout</a>
       {% else %}
         <a href="/login">Login</a>
@@ -51,16 +51,9 @@
         <div class="form-group">
           <label for="language">Language:</label>
           <select name="language" id="language">
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="it">Italian</option>
-            <option value="pt">Portuguese</option>
-            <option value="nl">Dutch</option>
-            <option value="sv">Swedish</option>
-            <option value="ja">Japanese</option>
-            <option value="zh">Chinese</option>
+            {% for code, name in supported_languages %}
+              <option value="{{ code }}">{{ name }}</option>
+            {% endfor %}
           </select>
         </div>
         
@@ -84,26 +77,25 @@
     <p id="toast-message"></p>
   </div>
 
+  <script src="{{ url_for('static', filename='scripts.js') }}"></script>
   <script>
-    // Show loading indicator when uploading
-    document.querySelector('form').addEventListener('submit', function(e) {
-      const fileInput = document.getElementById('file');
-      if (fileInput.files.length > 0) {
-        document.querySelector('.upload-btn').textContent = 'Uploading...';
-        document.querySelector('.upload-btn').disabled = true;
-      }
-    });
-    
-    // Handle toast messages
-    document.addEventListener('DOMContentLoaded', function() {
+    const showToast = (message) => {
       const toast = document.getElementById('toast');
-      const flashMessages = document.querySelectorAll('.flash');
-      
-      if (flashMessages.length > 0) {
-        setTimeout(() => {
-          document.querySelector('.flash-messages').style.display = 'none';
-        }, 5000);
-      }
+      const toastMessage = document.getElementById('toast-message');
+      toastMessage.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    };
+
+    const uploadBtn = document.querySelector('.upload-btn');
+    uploadBtn.addEventListener('click', () => {
+      uploadBtn.textContent = 'Uploading...';
+      uploadBtn.disabled = true;
+
+      // Example usage of toast
+      showToast('File upload started!');
     });
   </script>
 </body>

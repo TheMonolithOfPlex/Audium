@@ -5,6 +5,10 @@
   <title>System Log - WhisperX</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
+    :root {
+      --shadow-color: #334155;
+    }
+
     .log-container {
       background-color: #1e293b;
       padding: 1rem;
@@ -13,25 +17,27 @@
       overflow-y: auto;
       font-family: monospace;
       color: #e2e8f0;
-      box-shadow: 0 0 0 1px #334155;
+      box-shadow: 0 0 0 1px var(--shadow-color);
     }
     .log-line {
       white-space: pre-wrap;
       margin-bottom: 0.25rem;
     }
+    .dark {
+      background-color: #0f172a;
+      color: #e2e8f0;
+    }
   </style>
 </head>
 <body class="dark">
   <div class="sidebar">
-    <div class="logo">WhisperX</div>
     <nav>
       <a href="/">Dashboard</a>
-      <a href="/history">Uploads</a>
-      <a href="/settings">Settings</a>
+      <a href="/log" class="{{ 'active' if current_path == '/log' else '' }}">Log</a>
+      <a href="/settings" class="{{ 'active' if current_path == '/settings' else '' }}">Settings</a>
       <a href="/admin">Admin</a>
       <a href="/analytics">Analytics</a>
-      <a href="/log" class="active">Log</a>
-      {% if session.get('username') %}
+      {% if session.get('username', None) %}
         <a href="/logout">Logout</a>
       {% else %}
         <a href="/login">Login</a>
@@ -46,13 +52,15 @@
 
     <div class="card">
       <h2>Recent Activity</h2>
-      <div class="log-container">
-        {% if log_lines %}
-          {% for line in log_lines %}
+        {% if log_lines is defined and log_lines %}
+          {% for line in log_lines[:50] %}
             <div class="log-line">{{ line }}</div>
           {% endfor %}
+          {% if log_lines|length > 50 %}
+            <p>Showing the first 50 logs. <a href="/log?page=2">View more</a></p>
+          {% endif %}
         {% else %}
-          <p>No logs available.</p>
+          <p>No logs available. Please check back later.</p>
         {% endif %}
       </div>
     </div>

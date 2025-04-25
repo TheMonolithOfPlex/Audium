@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Panel - WhisperX</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" integrity="sha384-..." crossorigin="anonymous">
 </head>
 <body class="dark">
   <div class="sidebar">
@@ -15,7 +15,7 @@
       <a href="/admin" class="active">Admin</a>
       <a href="/analytics">Analytics</a>
       <a href="/log">Log</a>
-      {% if session.get('username') %}
+      {% if session and session.get('username') %}
         <a href="/logout">Logout</a>
       {% else %}
         <a href="/login">Login</a>
@@ -40,22 +40,33 @@
           </tr>
         </thead>
         <tbody>
-          {% for user in users %}
+          {% if users %}
+            {% for user in users %}
           <tr>
             <td>{{ user.username }}</td>
             <td>{{ user.role }}</td>
             <td>{{ user.status }}</td>
             <td>
-              <form action="/admin/toggle/{{ user.username }}" method="POST" style="display:inline;">
-                <button type="submit" class="admin-action-btn">Toggle Status</button>
-              </form>
+                <form method="post" action="/toggle_status">
+                    {% if csrf_token is defined and csrf_token %}
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {% endif %}
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <button type="submit" class="admin-action-btn">Toggle Status</button>
+                </form>
             </td>
           </tr>
-          {% endfor %}
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4">No users found.</td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
 
+    {% if get_flashed_messages is defined %}
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="flash-messages">
@@ -63,8 +74,8 @@
             <div class="flash {{ category }}">{{ message }}</div>
           {% endfor %}
         </div>
-      {% endif %}
     {% endwith %}
+    {% endif %}
   </div>
 </body>
 </html>

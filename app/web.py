@@ -48,7 +48,8 @@ def update_transcript_segment(transcript_id, segment_id):
     updated = False
     for seg in data.get('segments', []):
         if seg.get('id') == segment_id:
-            seg['text'] = request.json.get('text', seg['text'])
+            if request.is_json and isinstance(request.json, dict) and 'text' in request.json:
+                seg['text'] = request.json['text']
             updated = True
             break
     if updated:

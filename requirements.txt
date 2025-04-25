@@ -1,29 +1,29 @@
 # --- Web Framework ---
-flask
-flask-wtf
-flask-cors
-python-dotenv
+flask==2.3.2
+flask-wtf==1.1.1
+flask-cors==3.0.10
+python-dotenv==1.0.0
 
 # --- File Handling & Background Tasks ---
-werkzeug
-requests
-tqdm
-aiofiles
-schedule
-filelock
+werkzeug==2.3.6
+requests==2.31.0
+tqdm==4.66.1
+aiofiles==23.1.0
+schedule==1.2.0
+filelock==3.12.4
 
 # --- Email Validation ---
-email-validator
+email-validator==2.1.1
 
 # --- WhisperX and Audio Processing ---
-faster-whisper
-whisperx
-torchaudio
-torch
-librosa
-pydub
+faster-whisper==0.6.0
+whisperx==3.1.0
+torchaudio==2.0.2
+torch==2.0.1
+librosa==0.10.0.post2
+pydub==0.25.1
 pyannote-audio==3.1.1
-transformers
+transformers==4.33.3
 
 # --- System & Utility ---
-psutil
+psutil==5.9.5

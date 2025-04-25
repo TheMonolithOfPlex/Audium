@@ -22,12 +22,15 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "uploads")
+TRANSCRIPTS_FOLDER = os.getenv("TRANSCRIPTS_FOLDER", "transcripts")
+HISTORY_FILE = os.getenv("HISTORY_FILE", "uploads.json")
 
-UPLOAD_FOLDER = "uploads"
-TRANSCRIPTS_FOLDER = "transcripts"
-HISTORY_FILE = "uploads.json"
+if not UPLOAD_FOLDER or not TRANSCRIPTS_FOLDER or not HISTORY_FILE:
+    logger.error("One or more required environment variables are missing. Please check UPLOAD_FOLDER, TRANSCRIPTS_FOLDER, and HISTORY_FILE.")
+    raise EnvironmentError("Missing required environment variables.")
 
-os.makedirs(TRANSCRIPTS_FOLDER, exist_ok=True)
+    whisper_model = None
 
 # Load models with error handling
 try:
@@ -37,22 +40,36 @@ except Exception as e:
     logger.error(f"Failed to load Whisper model: {str(e)}")
     whisper_model = None
 
-try:
-    diarization_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization", use_auth_token=os.getenv("HF_TOKEN"))
-    logger.info("Diarization pipeline loaded successfully")
-except Exception as e:
-    logger.error(f"Failed to load diarization pipeline: {str(e)}")
+hf_token = os.getenv("HF_TOKEN")
+if not hf_token:
+    logger.error("Hugging Face token (HF_TOKEN) is not set in the environment variables.")
     diarization_pipeline = None
-
+else:
+    try:
+        diarization_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization", use_auth_token=hf_token)
+        logger.info("Diarization pipeline loaded successfully")
+    except Exception as e:
+        logger.error(f"Failed to load diarization pipeline: {str(e)}")
+        diarization_pipeline = None
 def update_job_status(job_id, status, error_message=None):
-    """Update job status in history file"""
-    if not os.path.exists(HISTORY_FILE):
-        return False
+    """
+    Update the status of a transcription job in the history file.
     
-    lock = filelock.FileLock(f"{HISTORY_FILE}.lock")
-    with lock:
-        with open(HISTORY_FILE, 'r') as f:
-            data = json.load(f)
+    Args:
+        job_id: The ID of the job to update.
+        status: The new status of the job.
+        error_message: Optional error message if the job failed.
+    """
+    logger.info(f"Updating job status: job_id={job_id}, status={status}, error_message={error_message}")
+    if not os.path.exists(HISTORY_FILE):
+        data = []
+    else:
+        try:
+            with open(HISTORY_FILE, 'r') as f:
+                data = json.load(f)
+        except json.JSONDecodeError as e:
+            logger.error(f"Error decoding JSON from {HISTORY_FILE}: {str(e)}")
+            return False
         
         for job in data:
             if job.get('job_id') == job_id:

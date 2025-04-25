@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <title>Analytics - WhisperX</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  {% if session is not defined %}
+    {% set session = {} %}
+  {% endif %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body class="dark">
   <div class="sidebar">
@@ -14,8 +18,7 @@
       <a href="/settings">Settings</a>
       <a href="/admin">Admin</a>
       <a href="/analytics" class="active">Analytics</a>
-      <a href="/log">Log</a>
-      {% if session.get('username') %}
+      {% if session and session.get('username') is not none %}
         <a href="/logout">Logout</a>
       {% else %}
         <a href="/login">Login</a>

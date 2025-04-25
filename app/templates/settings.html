@@ -4,28 +4,43 @@
   <meta charset="UTF-8" />
   <title>Settings - WhisperX</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="dark">
-  <div class="sidebar">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const stylesheet = document.querySelector('link[href="{{ url_for(\'static\', filename=\'style.css\') }}"]');
+      if (stylesheet) {
+        stylesheet.addEventListener('error', function () {
+          console.error('Failed to load stylesheet: style.css');
+          document.body.style.fontFamily = 'Arial, sans-serif';
+          document.body.style.backgroundColor = '#121212';
+          document.body.style.color = '#ffffff';
+        });
+      }
+    });
+  </script>
+    <style>
+      /* Fallback styles */
+      .sidebar {
+        padding: 10px;
+        background-color: #333;
+        color: #ffffff;
+      }
+    </style>
+    {% from 'macros.html' import welcome_message %}
+  </head>
+  <body>
+    <div class="sidebar">
     <div class="logo">WhisperX</div>
-    <nav>
-      <a href="/">Dashboard</a>
-      <a href="/history">Uploads</a>
-      <a href="/settings" class="active">Settings</a>
-      <a href="/analytics">Analytics</a>
-      <a href="/log">Log</a>
-      <a href="/admin">Admin</a>
-      {% if session.get('username') %}
-        <a href="/logout">Logout</a>
-      {% else %}
-        <a href="/login">Login</a>
-      {% endif %}
-    </nav>
+    <span>Welcome, {% if session and session.get('username') is not none %}{{ session.get('username') }}{% else %}Guest{% endif %}</span>
+    <a href="/analytics">Analytics</a>
+    {% if session.get('username') %}
+      <a href="/logout">Logout</a>
+    {% else %}
+      <a href="/login">Login</a>
+    {% endif %}
   </div>
-
-  <div class="main">
     <header class="topbar">
-      <span>Welcome, {{ session.get('username', 'Guest') }}</span>
+      <span>Welcome, {% if session.get('username') %}{{ session.get('username') }}{% else %}Guest{% endif %}</span>
+      <button id="theme-toggle">Toggle Dark Mode</button>
     </header>
 
     <div class="card">
@@ -41,12 +56,23 @@
         {% endif %}
       {% endwith %}
 
+      <!-- 
+        The form submits user preferences to the '/update_settings' endpoint.
+        This endpoint expects a POST request with the following fields:
+        - csrf_token: A CSRF protection token. Example: "123abc".
+        - email: The user's notification email (required if email_required is true). Example: "user@example.com".
+        - language: The default transcription language. Options: "en", "es", "fr", "de", "zh", "ja".
+        - auto_delete: A checkbox indicating whether auto-delete is enabled. Value: "1" for enabled.
+        Validation rules:
+        - csrf_token: Must be a valid token string.
+      -->
+      {% if csrf_token is not defined or not csrf_token %}
+        <p style="color: red;">Error: CSRF token is missing! Please refresh the page to try again.</p>
+      {% else %}
       <form method="POST" action="/update_settings">
-        <label for="email">Notification Email</label>
-        <input type="email" id="email" name="email" placeholder="you@example.com" required />
-
-        <label for="language">Default Transcription Language</label>
-        <select id="language" name="language">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="language">Language:</label>
+        <select name="language" id="language">
           <option value="en">English</option>
           <option value="es">Spanish</option>
           <option value="fr">French</option>
@@ -55,14 +81,38 @@
           <option value="ja">Japanese</option>
         </select>
 
-        <label class="checkbox-toggle">
-          <input type="checkbox" name="auto_delete" />
-          Automatically delete uploaded files after transcription
+        <label>
+          <input type="checkbox" name="auto_delete" value="1" {{ 'checked' if auto_delete | default(false) else '' }} />
+          Enable Auto-Delete
         </label>
 
         <button type="submit">Save Settings</button>
       </form>
+      {% endif %}
     </div>
   </div>
+<script>
+  const themeToggle = document.getElementById('theme-toggle');
+  const body = document.body;
+
+  // Ensure body has a default class
+  if (!body.classList.contains('dark') && !body.classList.contains('light')) {
+    body.classList.add('dark'); // Default to dark mode if no class is set
+    localStorage.setItem('theme', 'dark');
+  }
+
+  // Add event listener for theme toggle
+  themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('dark')) {
+      body.classList.remove('dark');
+      body.classList.add('light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.classList.remove('light');
+      body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+</script>
 </body>
 </html>

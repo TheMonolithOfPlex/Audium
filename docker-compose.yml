@@ -1,5 +1,9 @@
 version: '3.9'
 
+networks:
+  default:
+    driver: bridge
+
 services:
   whisperx:
     container_name: whisperx
@@ -9,8 +13,9 @@ services:
     ports:
       - "9200:9200"
     volumes:
-      - .:/app
-      - /app/__pycache__  # prevent Python cache files inside container
-    restart: unless-stopped
+      - ./local-dir:/path/in/container
     environment:
-      - PYTHONUNBUFFERED=1
+      - PYTHONUNBUFFERED=1  # Disable Python's output buffering for real-time logging
+    networks:
+      - default
+    restart: unless-stopped
