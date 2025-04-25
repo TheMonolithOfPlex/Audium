@@ -116,7 +116,7 @@ def transcribe_file(job_id=None, filename=None, language="en", user="unknown"):
                 logger.info(f"Running diarization on {filename}")
                 diarization = diarization_pipeline(filepath)
                 has_diarization = True
-                logger.info("Diarization completed successfully")
+                logger.info(f"Diarization completed successfully: {diarization}")
             except Exception as e:
                 logger.warning(f"Diarization failed, continuing with transcription only: {str(e)}")
         else:

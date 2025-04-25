@@ -4,7 +4,7 @@ import json
 import hashlib
 import secrets
 import filelock
-from datetime import datetime, timedelta
+from datetime import datetime
 
 USERS_FILE = 'users.json'
 

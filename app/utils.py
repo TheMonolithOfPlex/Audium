@@ -5,7 +5,7 @@ import json
 import uuid
 import filelock
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 UPLOAD_FOLDER = 'uploads'
 HISTORY_FILE = 'uploads.json'
